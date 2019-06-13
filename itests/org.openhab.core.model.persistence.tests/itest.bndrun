@@ -96,5 +96,4 @@ Fragment-Host: org.openhab.core.model.persistence
 	org.ops4j.pax.web.pax-web-jetty;version='[7.2.3,7.2.4)',\
 	org.ops4j.pax.web.pax-web-runtime;version='[7.2.3,7.2.4)',\
 	org.ops4j.pax.web.pax-web-spi;version='[7.2.3,7.2.4)',\
-	org.threeten.extra;version='[1.4.0,1.4.1)',\
-	org.openhab.core.model.sitemap.runtime;version='[2.5.0,2.5.1)'
+	org.threeten.extra;version='[1.4.0,1.4.1)'
