@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.ConfigDescription;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.eclipse.smarthome.config.core.i18n.ConfigI18nLocalizationService;
@@ -66,7 +67,8 @@ public class ModuleTypeI18nServiceImpl implements ModuleTypeI18nService {
      * @return the localized {@link ModuleType}.
      */
     @Override
-    public ModuleType getModuleTypePerLocale(ModuleType defModuleType, Locale locale, Bundle bundle) {
+    public @Nullable ModuleType getModuleTypePerLocale(@Nullable ModuleType defModuleType, @Nullable Locale locale,
+            @Nullable Bundle bundle) {
         if (locale == null || defModuleType == null || i18nProvider == null) {
             return defModuleType;
         }

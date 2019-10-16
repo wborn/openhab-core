@@ -14,11 +14,12 @@ package org.openhab.core.automation.internal.provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.common.registry.Provider;
 import org.eclipse.smarthome.core.common.registry.ProviderChangeListener;
 import org.eclipse.smarthome.core.i18n.TranslationProvider;
@@ -51,11 +52,12 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
  * @author Yordan Mihaylov - updates related to api changes
  */
+@NonNullByDefault
 @Component(immediate = true, service = { ModuleTypeProvider.class, Provider.class }, property = "provider.type=bundle")
 public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProvider<ModuleType>
         implements ModuleTypeProvider {
 
-    private ModuleTypeI18nService moduleTypeI18nService;
+    private @NonNullByDefault({}) ModuleTypeI18nService moduleTypeI18nService;
 
     /**
      * This constructor is responsible for initializing the path to resources and tracking the
@@ -64,14 +66,13 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      * @param context is the {@code BundleContext}, used for creating a tracker for {@link Parser} services.
      */
     public ModuleTypeResourceBundleProvider() {
-        listeners = new LinkedList<>();
-        path = ROOT_DIRECTORY + "/moduletypes/";
+        super(ROOT_DIRECTORY + "/moduletypes/");
     }
 
     @Override
     @Activate
-    protected void activate(BundleContext bc) {
-        super.activate(bc);
+    protected void activate(@Nullable BundleContext bundleContext) {
+        super.activate(bundleContext);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ModuleType> T getModuleType(String UID, Locale locale) {
+    public <T extends ModuleType> T getModuleType(String UID, @Nullable Locale locale) {
         return (T) getPerLocale(providedObjectsHolder.get(UID), locale);
     }
 
@@ -134,10 +135,13 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      * @see ModuleTypeProvider#getModuleTypes(java.util.Locale)
      */
     @Override
-    public Collection<ModuleType> getModuleTypes(Locale locale) {
+    public Collection<ModuleType> getModuleTypes(@Nullable Locale locale) {
         List<ModuleType> moduleTypesList = new ArrayList<>();
         for (ModuleType mt : providedObjectsHolder.values()) {
-            moduleTypesList.add(getPerLocale(mt, locale));
+            ModuleType mtPerLocale = getPerLocale(mt, locale);
+            if (mtPerLocale != null) {
+                moduleTypesList.add(mtPerLocale);
+            }
         }
         return moduleTypesList;
     }
@@ -154,7 +158,11 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      * @param locale represents a specific geographical, political, or cultural region.
      * @return the localized {@link ModuleType}.
      */
-    private ModuleType getPerLocale(ModuleType defModuleType, Locale locale) {
+    private @Nullable ModuleType getPerLocale(@Nullable ModuleType defModuleType, @Nullable Locale locale) {
+        if (defModuleType == null) {
+            return null;
+        }
+
         String uid = defModuleType.getUID();
         Bundle bundle = getBundle(uid);
 
