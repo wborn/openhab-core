@@ -37,17 +37,15 @@ import org.osgi.framework.Bundle;
 public class ModuleI18nUtil {
 
     public static <T extends Module> List<T> getLocalizedModules(TranslationProvider i18nProvider, List<T> modules,
-            @Nullable Bundle bundle, String uid, String prefix, Locale locale) {
+            Bundle bundle, String uid, String prefix, @Nullable Locale locale) {
         List<T> lmodules = new ArrayList<>();
         for (T module : modules) {
             String label = getModuleLabel(i18nProvider, bundle, uid, module.getId(), module.getLabel(), prefix, locale);
-            String description = getModuleDescription(i18nProvider, bundle, uid, prefix, module.getId(),
-                    module.getDescription(), locale);
+            String description = getModuleDescription(i18nProvider, bundle, uid, module.getId(),
+                    module.getDescription(), prefix, locale);
             @Nullable
             T lmodule = createLocalizedModule(module, label, description);
-            if (lmodule != null) {
-                lmodules.add(lmodule);
-            }
+            lmodules.add(lmodule == null ? module : lmodule);
         }
         return lmodules;
     }
@@ -81,15 +79,14 @@ public class ModuleI18nUtil {
         return ModuleBuilder.createAction(module).withLabel(label).withDescription(description).build();
     }
 
-    private static @Nullable String getModuleLabel(TranslationProvider i18nProvider, @Nullable Bundle bundle,
-            String uid, String moduleName, @Nullable String defaultLabel, String prefix, @Nullable Locale locale) {
+    private static @Nullable String getModuleLabel(TranslationProvider i18nProvider, Bundle bundle, String uid,
+            String moduleName, @Nullable String defaultLabel, String prefix, @Nullable Locale locale) {
         String key = I18nUtil.stripConstantOr(defaultLabel, () -> inferModuleKey(prefix, uid, moduleName, "label"));
         return i18nProvider.getText(bundle, key, defaultLabel, locale);
     }
 
-    private static @Nullable String getModuleDescription(TranslationProvider i18nProvider, @Nullable Bundle bundle,
-            String uid, String prefix, String moduleName, @Nullable String defaultDescription,
-            @Nullable Locale locale) {
+    private static @Nullable String getModuleDescription(TranslationProvider i18nProvider, Bundle bundle, String uid,
+            String moduleName, @Nullable String defaultDescription, String prefix, @Nullable Locale locale) {
         String key = I18nUtil.stripConstantOr(defaultDescription,
                 () -> inferModuleKey(prefix, uid, moduleName, "description"));
         return i18nProvider.getText(bundle, key, defaultDescription, locale);
