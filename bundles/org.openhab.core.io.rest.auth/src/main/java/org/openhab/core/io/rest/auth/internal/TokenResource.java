@@ -115,7 +115,7 @@ public class TokenResource implements RESTResource {
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_FORM_URLENCODED })
     @Operation(operationId = "getOAuthToken", summary = "Get access and refresh tokens.", responses = {
-            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = TokenResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters") })
     public Response getToken(@FormParam("grant_type") String grantType, @FormParam("code") String code,
             @FormParam("redirect_uri") String redirectUri, @FormParam("client_id") String clientId,
@@ -244,9 +244,8 @@ public class TokenResource implements RESTResource {
         ResponseBuilder response = Response.ok();
 
         if (sessionCookie != null && sessionCookie.getValue().equals(session.get().getSessionId())) {
-            URI domainUri;
             try {
-                domainUri = new URI(session.get().getRedirectUri());
+                URI domainUri = new URI(session.get().getRedirectUri());
                 NewCookie newCookie = new NewCookie(SESSIONID_COOKIE_NAME, null, "/", domainUri.getHost(), null, 0,
                         false, true);
                 response.cookie(newCookie);
