@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'multi-os'
     paths-ignore:
       - '.github/**/*.md'
   pull_request:
@@ -19,21 +20,20 @@ jobs:
       fail-fast: false
       matrix:
         java: [ '21', '25' ]
-        os: [ 'ubuntu-24.04' ]
+        os: [ 'macos-12', 'ubuntu-24.04', 'windows-2022' ]
     name: Build (Java ${{ matrix.java }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     # typical duration is ~15min, set twice the amount as limit (default is 6h)
     timeout-minutes: 30
     steps:
-      - name: Checkout
-        if: github.head_ref == ''
-        uses: actions/checkout@v7
+      - name: Set up line endings
+        if: ${{ matrix.os == 'windows-2022' }}
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol crlf
 
-      - name: Checkout merge
-        if: github.head_ref != ''
+      - name: Checkout
         uses: actions/checkout@v7
-        with:
-          ref: refs/pull/${{github.event.pull_request.number}}/merge
 
       - name: Set up Cache
         uses: actions/cache@v6
@@ -52,7 +52,7 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Register Problem Matchers
-        if: ${{ matrix.java == '21' }}
+        if: ${{ matrix.java == '21' && matrix.os == 'ubuntu-22.04' }}
         id: problem_matchers
         run: |
           echo "::add-matcher::.github/openhab-compile-problems.json"
@@ -112,14 +112,7 @@ jobs:
         -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
     steps:
       - name: Checkout
-        if: github.head_ref == ''
         uses: actions/checkout@v7
-
-      - name: Checkout merge
-        if: github.head_ref != ''
-        uses: actions/checkout@v7
-        with:
-          ref: refs/pull/${{github.event.pull_request.number}}/merge
 
       - name: Set up Cache
         uses: actions/cache@v6
@@ -162,7 +155,7 @@ jobs:
           path: target/summary_report.html
 
       - name: Report SAT Errors as Annotations
-        if: ${{ matrix.java == '21' && always() && ((steps.sat.outcome == 'success') || (steps.sat.outcome == 'failure')) }}
+        if: ${{ always() && ((steps.build.outcome == 'success') || (steps.build.outcome == 'failure')) }}
         uses: ghys/checkstyle-github-action@main
         with:
           title: CheckStyle Violations
@@ -170,7 +163,7 @@ jobs:
           mode: inline
 
       - name: Remove Label
-        if: ${{ matrix.java == '21' && always() && github.event.label.name == 'rebuild' }}
+        if: ${{ always() && github.event.label.name == 'rebuild' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.number }}
