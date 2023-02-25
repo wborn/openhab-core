@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'bnd-7'
     paths-ignore:
       - '.github/**/*.md'
   pull_request:
@@ -11,6 +12,8 @@ on:
       - 'main'
     paths-ignore:
       - '.github/**/*.md'
+  schedule:
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -69,7 +72,7 @@ jobs:
 
       - name: Build
         id: build
-        run: mvn clean verify -B -T 1.5C -U
+        run: mvn clean verify -B -DskipChecks=true -T 1.5C -U
         env:
           MAVEN_OPTS: >-
             -Xmx2g

@@ -41,7 +41,6 @@ Fragment-Host: org.openhab.core.model.script
 	com.google.inject;version='[5.0.1,5.0.2)',\
 	ch.qos.logback.classic;version='[1.2.11,1.2.12)',\
 	ch.qos.logback.core;version='[1.2.11,1.2.12)',\
-	biz.aQute.tester.junit-platform;version='[6.4.0,6.4.1)',\
 	com.google.gson;version='[2.9.1,2.9.2)',\
 	io.github.classgraph;version='[4.8.149,4.8.150)',\
 	org.eclipse.equinox.common;version='[3.16.200,3.16.201)',\
@@ -122,4 +121,5 @@ Fragment-Host: org.openhab.core.model.script
 	tech.units.indriya;version='[2.2.0,2.2.1)',\
 	uom-lib-common;version='[2.2.0,2.2.1)',\
 	io.methvin.directory-watcher;version='[0.18.0,0.18.1)',\
-	org.openhab.core.model.rule.runtime;version='[4.1.0,4.1.1)'
+	biz.aQute.tester.junit-platform;version='[7.0.0,7.0.1)',\
+	org.openhab.core.model.item.runtime;version='[4.1.0,4.1.1)'

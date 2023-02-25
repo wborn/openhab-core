@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -69,7 +69,7 @@
     <maven.compiler.target>${oh.java.version}</maven.compiler.target>
     <maven.compiler.compilerVersion>${oh.java.version}</maven.compiler.compilerVersion>
 
-    <bnd.version>6.4.0</bnd.version>
+    <bnd.version>7.0.0-RC1</bnd.version>
     <commons.net.version>3.7.2</commons.net.version>
     <eea.version>2.3.0</eea.version>
     <karaf.compile.version>4.4.3</karaf.compile.version>
@@ -115,6 +115,46 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>bnd</id>
+      <name>Bnd release candidates</name>
+      <url>https://bndtools.jfrog.io/bndtools/update-rc</url>
+      <!--
+        <name>Bnd snapshots</name>
+        <url>https://bndtools.jfrog.io/bndtools/libs-snapshot-local</url>
+      -->
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>bnd</id>
+      <name>Bnd release candidates</name>
+      <url>https://bndtools.jfrog.io/bndtools/update-rc</url>
+      <!--
+        <name>Bnd snapshots</name>
+        <url>https://bndtools.jfrog.io/bndtools/libs-snapshot-local</url>
+      -->
+    </pluginRepository>
+  </pluginRepositories>
 
   <build>
     <pluginManagement>
@@ -205,7 +245,7 @@ Import-Package: \\
           <version>${bnd.version}</version>
           <configuration>
             <failOnChanges>false</failOnChanges>
-            <bndruns/>
+            <bndruns></bndruns>
           </configuration>
           <executions>
             <execution>
@@ -334,15 +374,11 @@ Import-Package: \\
             <!-- The search function is broken without the workaround below -->
             <!-- See: https://stackoverflow.com/questions/52326318/maven-javadoc-search-redirects-to-undefined-url -->
             <additionalJOption>--allow-script-in-comments</additionalJOption>
-            <bottom>
-              <![CDATA[
-                <script>
+            <bottom><![CDATA[<script>
                 if (typeof useModuleDirectories !== 'undefined') {
                   useModuleDirectories = false;
                 }
-                </script>
-              ]]>
-            </bottom>
+                </script>]]></bottom>
           </configuration>
           <dependencies>
             <!-- This newer version fixes issues with resolving tech.units:indriya packages -->
@@ -392,10 +428,8 @@ Import-Package: \\
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.1.2</version>
           <configuration>
-            <argLine>
-              --add-opens java.base/java.net=ALL-UNNAMED
-              --add-opens java.base/java.util=ALL-UNNAMED
-            </argLine>
+            <argLine>--add-opens java.base/java.net=ALL-UNNAMED
+              --add-opens java.base/java.util=ALL-UNNAMED</argLine>
             <systemPropertyVariables>
               <junit.jupiter.execution.timeout.default>15 m</junit.jupiter.execution.timeout.default>
             </systemPropertyVariables>
@@ -547,11 +581,11 @@ Import-Package: \\
                 <file>openhab_codestyle.xml</file>
                 <version>${spotless.eclipse.version}</version>
               </eclipse>
-              <removeUnusedImports/>
+              <removeUnusedImports></removeUnusedImports>
               <importOrder>
                 <file>openhab.importorder</file>
               </importOrder>
-              <endWithNewline/>
+              <endWithNewline></endWithNewline>
             </java>
             <formats>
               <format>
@@ -570,8 +604,8 @@ Import-Package: \\
                   </files>
                   <version>${spotless.eclipse.wtp.version}</version>
                 </eclipseWtp>
-                <trimTrailingWhitespace/>
-                <endWithNewline/>
+                <trimTrailingWhitespace></trimTrailingWhitespace>
+                <endWithNewline></endWithNewline>
               </format>
               <format>
                 <!-- feature.xml -->
@@ -585,8 +619,8 @@ Import-Package: \\
                   </files>
                   <version>${spotless.eclipse.wtp.version}</version>
                 </eclipseWtp>
-                <trimTrailingWhitespace/>
-                <endWithNewline/>
+                <trimTrailingWhitespace></trimTrailingWhitespace>
+                <endWithNewline></endWithNewline>
               </format>
               <format>
                 <!-- pom.xml -->
@@ -600,8 +634,8 @@ Import-Package: \\
                   </files>
                   <version>${spotless.eclipse.wtp.version}</version>
                 </eclipseWtp>
-                <trimTrailingWhitespace/>
-                <endWithNewline/>
+                <trimTrailingWhitespace></trimTrailingWhitespace>
+                <endWithNewline></endWithNewline>
               </format>
             </formats>
           </configuration>
@@ -711,7 +745,7 @@ Import-Package: \\
                         </goals>
                       </pluginExecutionFilter>
                       <action>
-                        <ignore/>
+                        <ignore></ignore>
                       </action>
                     </pluginExecution>
                     <pluginExecution>
@@ -724,7 +758,7 @@ Import-Package: \\
                         </goals>
                       </pluginExecutionFilter>
                       <action>
-                        <ignore/>
+                        <ignore></ignore>
                       </action>
                     </pluginExecution>
                     <pluginExecution>
@@ -738,7 +772,7 @@ Import-Package: \\
                         </goals>
                       </pluginExecutionFilter>
                       <action>
-                        <ignore/>
+                        <ignore></ignore>
                       </action>
                     </pluginExecution>
                     <pluginExecution>
@@ -751,7 +785,7 @@ Import-Package: \\
                         </goals>
                       </pluginExecutionFilter>
                       <action>
-                        <ignore/>
+                        <ignore></ignore>
                       </action>
                     </pluginExecution>
                   </pluginExecutions>
@@ -831,4 +865,5 @@ Import-Package: \\
       </build>
     </profile>
   </profiles>
+
 </project>
