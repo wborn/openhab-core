@@ -489,7 +489,7 @@ Import-Package: \\
         <plugin>
           <groupId>org.openhab.core.tools</groupId>
           <artifactId>i18n-maven-plugin</artifactId>
-          <version>4.0.2</version>
+          <version>4.1.0</version>
         </plugin>
 
         <plugin>
